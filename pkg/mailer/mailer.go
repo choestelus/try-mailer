@@ -68,6 +68,7 @@ type Mailer interface {
 	Name() string
 	Version() string
 	Configure() error
+	Configured() bool
 	Health() bool
 	Send(Message) error
 }

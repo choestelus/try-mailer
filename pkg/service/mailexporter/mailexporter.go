@@ -29,9 +29,12 @@ func (me *MailExporter) AddBackend(mailer mailer.Mailer) {
 // SendMail initialize mailer backend
 func (me *MailExporter) SendMail(msg mailer.Message) error {
 	mailer := me.mailers[0]
-	err := mailer.Configure()
-	if err != nil {
-		return errors.Wrap(err, "failed to initialize mailer")
+
+	if !mailer.Configured() {
+		err := mailer.Configure()
+		if err != nil {
+			return errors.Wrap(err, "failed to initialize mailer")
+		}
 	}
 
 	err = mailer.Send(msg)

@@ -35,6 +35,16 @@ func (m MailgunService) Configure() error {
 	return envconfig.Process("MAILER", &opts)
 }
 
+func (m MailgunService) Configured() bool {
+	return opts.Configured
+
+}
+
+// ConfigureFromOptions sets package local configuration from initialized options
+func ConfigureFromOptions(mo MailgunServiceOptions) {
+	opts = mo
+}
+
 // Name returns name of mailer implementation
 func (m MailgunService) Name() string {
 	return "mailgun"

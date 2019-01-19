@@ -14,6 +14,7 @@ type MailgunServiceOptions struct {
 	Domain         string        `required:"true"`
 	APIKey         string        `required:"true" envconfig:"api_key"`
 	SendingTimeout time.Duration `default:"10s"`
+	Configured     bool          `default:"true"`
 }
 
 // Configure contains implementation for package initialization
