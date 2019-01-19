@@ -83,10 +83,10 @@ func (m MailgunService) Send(msg mailer.Message) error {
 		return errors.Wrap(err, "failed to send mail")
 	}
 
-	fmt.Printf("-----------------------mailgun-----------------------")
-	fmt.Printf("ID:       %v", id)
-	fmt.Printf("Response: %v", resp)
-	fmt.Printf("-----------------------mailgun-----------------------")
+	fmt.Printf("-----------------------mailgun-----------------------\n")
+	fmt.Printf("ID:       %v\n", id)
+	fmt.Printf("Response: %v\n", resp)
+	fmt.Printf("-----------------------mailgun-----------------------\n")
 
 	return nil
 }
