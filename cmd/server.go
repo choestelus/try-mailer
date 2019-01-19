@@ -14,5 +14,5 @@ func newServer(cfg Config, logger *logrus.Logger) *echo.Echo {
 
 	e := echo.New()
 	e.POST("/send", api.MailerHandlerFunc(me))
-	return nil
+	return e
 }
