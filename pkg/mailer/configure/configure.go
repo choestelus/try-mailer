@@ -7,7 +7,7 @@ import (
 	"github.com/choestelus/try-mailer/pkg/mailer/mailgun"
 )
 
-var mailers = map[string]mailer.RegisterOptions{}
+var Mailers = map[string]mailer.RegisterOptions{}
 
 func init() {
 	register := mailer.RegisterFunc(mailers)
