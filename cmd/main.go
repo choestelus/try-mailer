@@ -13,19 +13,15 @@ func main() {
 
 	log.Infof("server is starting...")
 
-	for backend, option := range configure.Mailers {
-		mailer := option.Mailer()
-		err := mailer.Configure()
-		if err != nil {
-			log.Errorf("failed to initialize [%v] backend service")
-			continue
-		}
-		log.Infof("initialized [%v] backend service", backend)
-	}
-
 	me := mex.NewMailExporter(mex.MailExporterOptions{
 		Logger: log,
 	})
+
+	for backend, option := range configure.Mailers {
+		mailer := option.Mailer()
+		log.Infof("registered [%v] backend service", backend)
+		me.AddBackend(mailer)
+	}
 
 	apiServer := newServer(cfg, log)
 

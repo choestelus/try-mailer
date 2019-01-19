@@ -22,13 +22,16 @@ func NewMailExporter(opts MailExporterOptions) *MailExporter {
 	}
 }
 
-func (me *MailExporter) SendMail(msg mailer.Message) error {
-	log := me.logger
+func (me *MailExporter) AddBackend(mailer mailer.Mailer) {
+	me.mailers = append(me.mailers, mailer)
+}
 
+// SendMail initialize mailer backend
+func (me *MailExporter) SendMail(msg mailer.Message) error {
 	mailer := me.mailers[0]
 	err := mailer.Configure()
 	if err != nil {
-		log.Panicf("failed to initialize mailer: %v", err)
+		return errors.Wrap(err, "failed to initialize mailer")
 	}
 
 	err = mailer.Send(msg)
