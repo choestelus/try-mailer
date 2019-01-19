@@ -43,5 +43,3 @@ type Mailer interface {
 	Health() bool
 	Send(Message) error
 }
-
-type Configurator func([]byte) error
