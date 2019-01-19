@@ -3,17 +3,20 @@
 package mailgun
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/choestelus/try-mailer/pkg/mailer"
 	"github.com/kelseyhightower/envconfig"
 	mg "github.com/mailgun/mailgun-go"
+	"github.com/pkg/errors"
 )
 
 // MailgunService holds information and
 // underlying implementation for mailgun service
 type MailgunService struct {
-	sendingTimeout time.Time
+	sendingTimeout time.Duration
 	mailgun        *mg.MailgunImpl
 }
 
@@ -30,7 +33,7 @@ func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
 // Configure loads configuration into declared opts variable.
 // The configuration is loaded by package configure by default
 // so this function may not be used
-func (m *MailgunService) Configure() error {
+func (m MailgunService) Configure(interface{}) error {
 	return envconfig.Process("MAILER", &opts)
 }
 
@@ -52,5 +55,40 @@ func (m MailgunService) Health() bool {
 
 // Send sends mail content to recipients from msg definition
 func (m MailgunService) Send(msg mailer.Message) error {
+	message := m.mailgun.NewMessage(msg.Sender, msg.Subject, msg.TextMessage, msg.Recipients...)
+
+	// Attach attachments if any
+	for _, attachment := range msg.Attachment {
+		message.AddBufferAttachment(attachment.Name, attachment.Body)
+	}
+
+	// Insert HTML message part
+	if msg.HTMLMessage != "" {
+		message.SetHtml(msg.HTMLMessage)
+	}
+
+	// Add BCC recipients
+	for _, recp := range msg.BCC {
+		message.AddBCC(recp)
+	}
+
+	// Add CC recipients
+	for _, recp := range msg.CC {
+		message.AddCC(recp)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), opts.SendingTimeout)
+	defer cancel()
+
+	resp, id, err := m.mailgun.Send(ctx, message)
+	if err != nil {
+		return errors.Wrap(err, "failed to send mail")
+	}
+
+	fmt.Printf("-----------------------mailgun-----------------------")
+	fmt.Printf("ID:       %v", id)
+	fmt.Printf("Response: %v", resp)
+	fmt.Printf("-----------------------mailgun-----------------------")
+
 	return nil
 }
