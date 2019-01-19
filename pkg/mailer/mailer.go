@@ -2,6 +2,7 @@
 // abstraction layer for mailing infrastructure
 package mailer
 
+// Header contains necessary information about mail header
 type Header struct {
 	Sender     string   `json:"sender"`
 	Recipients []string `json:"recipients"`
@@ -10,32 +11,59 @@ type Header struct {
 	Subject    string   `json:"subject"`
 }
 
+// Content contains messages both plaintext and HTML format
+// with attachments if any
 type Content struct {
 	TextMessage string
 	HTMLMessage string
 	Attachment  []Attachment
 }
 
+// Attachment contains file information to attach
 type Attachment struct {
 	Name string
 	Body []byte
 }
 
+// Message compose various mail information to be sent
 type Message struct {
 	Header
 	Content
 }
 
-type Messager interface {
-	AddHeader(header string, value string)
-	AddAttachment([]byte)
-	AddBCC(...string)
-	AddCC(...string)
-	AddRecipient(...string)
-	SetTextContent(string)
-	SetHTMLContent(string)
+func (msg *Message) SetSender(s string) {
+	msg.Sender = s
 }
 
+func (msg *Message) AddRecipient(recp string) {
+	msg.Recipients = append(msg.Recipients, recp)
+}
+
+func (msg *Message) AddBCC(recp string) {
+	msg.BCC = append(msg.BCC, recp)
+}
+
+func (msg *Message) AddCC(recp string) {
+	msg.CC = append(msg.CC, recp)
+}
+
+func (msg *Message) SetSubject(s string) {
+	msg.Subject = s
+}
+
+func (msg *Message) SetTextMessage(txt string) {
+	msg.TextMessage = txt
+}
+
+func (msg *Message) SetHTMLMessage(html string) {
+	msg.HTMLMessage = html
+}
+
+func (msg *Message) AddAttachment(name string, content []byte) {
+	msg.Attachment = append(msg.Attachment, Attachment{Name: name, Body: content})
+}
+
+// Mailer defines interface for mail exporter backend implementation
 type Mailer interface {
 	Name() string
 	Version() string
