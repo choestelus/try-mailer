@@ -10,7 +10,7 @@ import (
 var Mailers = map[string]mailer.RegisterOptions{}
 
 func init() {
-	register := mailer.RegisterFunc(mailers)
+	register := mailer.RegisterFunc(Mailers)
 	register("mailgun", mailer.RegisterOptions{
 		Mailer:       mailgun.NewMailer,
 		Configurator: mailgun.Configure,

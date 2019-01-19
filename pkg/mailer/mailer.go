@@ -3,11 +3,11 @@
 package mailer
 
 type Header struct {
-	Sender     string
-	Recipients []string
-	BCC        []string
-	CC         []string
-	Subject    string
+	Sender     string   `json:"sender"`
+	Recipients []string `json:"recipients"`
+	BCC        []string `json:"bcc"`
+	CC         []string `json:"cc"`
+	Subject    string   `json:"subject"`
 }
 
 type Content struct {
@@ -39,7 +39,7 @@ type Messager interface {
 type Mailer interface {
 	Name() string
 	Version() string
-	Configure(interface{}) error
+	Configure() error
 	Health() bool
 	Send(Message) error
 }
