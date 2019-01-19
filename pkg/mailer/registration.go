@@ -4,7 +4,7 @@ package mailer
 type Configurator func([]byte) error
 
 // NewMailer defines function signature for mailer creations
-type NewMailer func() (Mailer, error)
+type NewMailer func() Mailer
 
 // RegisterOptions contains mailer creation directive and its configure procedure
 // for use when register into executable

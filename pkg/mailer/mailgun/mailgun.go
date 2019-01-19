@@ -21,7 +21,7 @@ type MailgunService struct {
 }
 
 // NewMailer returns abstracted mailgun service with mailer interface
-func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
+func NewMailer() mailer.Mailer {
 	m := mg.NewMailgun(opts.Domain, opts.APIKey)
 
 	return MailgunService{
@@ -31,9 +31,7 @@ func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
 }
 
 // Configure loads configuration into declared opts variable.
-// The configuration is loaded by package configure by default
-// so this function may not be used
-func (m MailgunService) Configure(interface{}) error {
+func (m MailgunService) Configure() error {
 	return envconfig.Process("MAILER", &opts)
 }
 
