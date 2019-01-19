@@ -10,20 +10,6 @@ import (
 	mg "github.com/mailgun/mailgun-go"
 )
 
-var opts = MailgunServiceOptions{}
-
-// MailgunServiceOptions contains configuration
-// used for initialize mailgun service
-type MailgunServiceOptions struct {
-	Domain         string    `required:"true"`
-	APIKey         string    `required:"true" envconfig:"api_key"`
-	SendingTimeout time.Time `default:"10s"`
-}
-
-func Configure([]byte) error {
-	return envconfig.Process("MAILGUN", &opts)
-}
-
 // MailgunService holds information and
 // underlying implementation for mailgun service
 type MailgunService struct {
@@ -41,11 +27,30 @@ func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
 	}
 }
 
+// Configure loads configuration into declared opts variable.
+// The configuration is loaded by package configure by default
+// so this function may not be used
+func (m *MailgunService) Configure() error {
+	return envconfig.Process("MAILER", &opts)
+}
+
+// Name returns name of mailer implementation
 func (m MailgunService) Name() string {
 	return "mailgun"
 }
 
+// Version returns version of mailer implementation
 func (m MailgunService) Version() string {
 	// TODO: use govvv
 	return "0.1.0"
+}
+
+// Health returns health status of the service
+func (m MailgunService) Health() bool {
+	return true
+}
+
+// Send sends mail content to recipients from msg definition
+func (m MailgunService) Send(msg mailer.Message) error {
+	return nil
 }
