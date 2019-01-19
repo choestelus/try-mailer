@@ -21,7 +21,7 @@ type MailgunService struct {
 }
 
 // NewMailer returns abstracted mailgun service with mailer interface
-func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
+func NewMailer() mailer.Mailer {
 	m := mg.NewMailgun(opts.Domain, opts.APIKey)
 
 	return MailgunService{
@@ -31,10 +31,18 @@ func NewMailer(opts MailgunServiceOptions) mailer.Mailer {
 }
 
 // Configure loads configuration into declared opts variable.
-// The configuration is loaded by package configure by default
-// so this function may not be used
-func (m MailgunService) Configure(interface{}) error {
+func (m MailgunService) Configure() error {
 	return envconfig.Process("MAILER", &opts)
+}
+
+func (m MailgunService) Configured() bool {
+	return opts.Configured
+
+}
+
+// ConfigureFromOptions sets package local configuration from initialized options
+func ConfigureFromOptions(mo MailgunServiceOptions) {
+	opts = mo
 }
 
 // Name returns name of mailer implementation
@@ -85,10 +93,10 @@ func (m MailgunService) Send(msg mailer.Message) error {
 		return errors.Wrap(err, "failed to send mail")
 	}
 
-	fmt.Printf("-----------------------mailgun-----------------------")
-	fmt.Printf("ID:       %v", id)
-	fmt.Printf("Response: %v", resp)
-	fmt.Printf("-----------------------mailgun-----------------------")
+	fmt.Printf("-----------------------mailgun-----------------------\n")
+	fmt.Printf("ID:       %v\n", id)
+	fmt.Printf("Response: %v\n", resp)
+	fmt.Printf("-----------------------mailgun-----------------------\n")
 
 	return nil
 }
