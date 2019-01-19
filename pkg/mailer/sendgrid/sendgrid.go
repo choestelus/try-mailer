@@ -3,6 +3,7 @@
 package sendgrid
 
 import (
+	"encoding/base64"
 	"fmt"
 
 	"github.com/choestelus/try-mailer/pkg/mailer"
@@ -92,7 +93,7 @@ func (s SendgridService) Send(msg mailer.Message) error {
 	for _, file := range msg.Attachment {
 		am := mail.NewAttachment()
 
-		am.SetContent(string(file.Body))
+		am.SetContent(base64.StdEncoding.EncodeToString(file.Body))
 		am.SetFilename(file.Name)
 		am.SetType(file.ContentType)
 
@@ -107,8 +108,11 @@ func (s SendgridService) Send(msg mailer.Message) error {
 	fmt.Printf("-----------------------sendgrid-----------------------\n")
 	fmt.Printf("StatusCode:       %v\n", resp.StatusCode)
 	fmt.Printf("ResponseBody:     %v\n", resp.Body)
-	fmt.Printf("ResponseHeader    %v\n", resp.Headers)
 	fmt.Printf("-----------------------sendgrid-----------------------\n")
+
+	if resp.StatusCode >= 400 {
+		return fmt.Errorf("failed to send mail, logged message response")
+	}
 
 	return nil
 }
