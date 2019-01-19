@@ -37,7 +37,7 @@ func (me *MailExporter) SendMail(msg mailer.Message) error {
 		}
 	}
 
-	err = mailer.Send(msg)
+	err := mailer.Send(msg)
 	if err != nil {
 		return errors.Wrap(err, "mail-exporter: failed to send mail")
 	}
