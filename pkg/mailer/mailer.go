@@ -1,3 +1,5 @@
+// package mailer provides common interface and
+// abstraction layer for mailing infrastructure
 package mailer
 
 type Header struct {
@@ -39,5 +41,7 @@ type Mailer interface {
 	Version() string
 	Configure(interface{}) error
 	Health() bool
-	Send(Mail) error
+	Send(Message) error
 }
+
+type Configurator func([]byte) error
