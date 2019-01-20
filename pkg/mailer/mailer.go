@@ -68,7 +68,7 @@ func (msg *Message) AddAttachment(name string, content []byte) {
 type Mailer interface {
 	Name() string
 	Version() string
-	Configure() error
+	Configure() (Mailer, error)
 	Configured() bool
 	Health() bool
 	Send(Message) error
