@@ -18,21 +18,28 @@ import (
 type MailgunService struct {
 	sendingTimeout time.Duration
 	mailgun        *mg.MailgunImpl
+	opts           MailgunServiceOptions
 }
 
 // NewMailer returns abstracted mailgun service with mailer interface
 func NewMailer() mailer.Mailer {
-	m := mg.NewMailgun(opts.Domain, opts.APIKey)
+	// m := mg.NewMailgun(opts.Domain, opts.APIKey)
 
 	return MailgunService{
 		sendingTimeout: opts.SendingTimeout,
-		mailgun:        m,
 	}
 }
 
 // Configure loads configuration into declared opts variable.
-func (m MailgunService) Configure() error {
-	return envconfig.Process("MAILER", &opts)
+func (m MailgunService) Configure() (mailer.Mailer, error) {
+	opts := MailgunServiceOptions{}
+
+	err := envconfig.Process("MAILGUN", &opts)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load config fome environment")
+	}
+	m.opts = opts
+	return m, nil
 }
 
 func (m MailgunService) Configured() bool {
@@ -63,6 +70,7 @@ func (m MailgunService) Health() bool {
 
 // Send sends mail content to recipients from msg definition
 func (m MailgunService) Send(msg mailer.Message) error {
+	m.mailgun = mg.NewMailgun(m.opts.Domain, m.opts.APIKey)
 	message := m.mailgun.NewMessage(msg.Sender, msg.Subject, msg.TextMessage, msg.Recipients...)
 
 	// Attach attachments if any
