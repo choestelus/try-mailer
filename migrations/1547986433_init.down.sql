@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS public.history;
+DROP TABLE IF EXISTS public.histories;
