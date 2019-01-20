@@ -14,16 +14,16 @@ type Header struct {
 // Content contains messages both plaintext and HTML format
 // with attachments if any
 type Content struct {
-	TextMessage string
-	HTMLMessage string
-	Attachment  []Attachment
+	TextMessage string       `json:"text_message"`
+	HTMLMessage string       `json:"html_message"`
+	Attachment  []Attachment `json:"attachments"`
 }
 
 // Attachment contains file information to attach
 type Attachment struct {
-	Name        string
-	Body        []byte
-	ContentType string
+	Name        string `json:"name"`
+	Body        []byte `json:"body"`
+	ContentType string `json:"content_type"`
 }
 
 // Message compose various mail information to be sent
