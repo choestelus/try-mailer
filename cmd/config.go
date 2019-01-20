@@ -40,6 +40,14 @@ func initDB(cfg Config) *pg.DB {
 		Password: cfg.DBPassword,
 	})
 
+	res := 0
+	_, err := dbCon.QueryOne(pg.Scan(&res), "SELECT 1+1")
+	if err != nil || res != 2 {
+		panic(err)
+	}
+
+	logrus.Infof("initialzed database")
+
 	return dbCon
 }
 
