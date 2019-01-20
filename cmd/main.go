@@ -10,6 +10,7 @@ import (
 func main() {
 	cfg := initConfig()
 	log := initLog(cfg)
+	dbCon := initDB(cfg)
 
 	log.Infof("server is starting...")
 
@@ -28,7 +29,7 @@ func main() {
 		me.AddBackend(configuredMailer)
 	}
 
-	apiServer := newServer(cfg, me)
+	apiServer := newServer(dbCon, me)
 
 	log.Fatal(apiServer.Start(fmt.Sprintf("%v:%v", cfg.APIHost, cfg.APIPort)))
 }
