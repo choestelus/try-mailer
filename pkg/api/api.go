@@ -61,3 +61,20 @@ func MailerHandlerFunc(db *pg.DB, me *mex.MailExporter) func(c echo.Context) err
 		return c.NoContent(http.StatusOK)
 	}
 }
+
+func HistoryHandlerFunc(db *pg.DB) func(c echo.Context) error {
+	return func(c echo.Context) error {
+		email := c.Param("mail")
+		histories := []History{}
+		_, err := db.Query(&histories, `SELECT * FROM public.histories WHERE email = ?`, email)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+				"message": "failed to query sending log",
+				"error":   err.Error(),
+			})
+		}
+
+		return c.JSON(http.StatusOK, histories)
+
+	}
+}
