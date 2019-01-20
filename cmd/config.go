@@ -7,8 +7,8 @@ import (
 
 // Config contains general configuration for running API server
 type Config struct {
-	APIHost string `required:"false" envconfig: "api_host" default:"localhost"`
-	APIPort int    `required:"false" envconfig: "api_port" default:"40000"`
+	APIHost string `required:"false" envconfig:"api_host" default:"localhost"`
+	APIPort int    `required:"false" envconfig:"api_port" default:"40000"`
 
 	// debug flag and log level will be associated with logrus log level
 	// when debug flag is set to true, log level will alwayls be "DEBUG" level
