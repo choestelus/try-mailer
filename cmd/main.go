@@ -27,7 +27,7 @@ func main() {
 		me.AddBackend(mailer)
 	}
 
-	apiServer := newServer(cfg, log)
+	apiServer := newServer(cfg, me)
 
 	log.Fatal(apiServer.Start(fmt.Sprintf("%v:%v", cfg.APIHost, cfg.APIPort)))
 }
