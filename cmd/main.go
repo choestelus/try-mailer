@@ -19,6 +19,10 @@ func main() {
 
 	for backend, option := range configure.Mailers {
 		mailer := option.Mailer()
+		err := option.Configurator()
+		if err != nil {
+			log.Panicf("mailer misconfigured, instantiate config again and retry: %v", err)
+		}
 		log.Infof("registered [%v] backend service", backend)
 		me.AddBackend(mailer)
 	}

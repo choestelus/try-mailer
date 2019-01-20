@@ -18,6 +18,6 @@ type MailgunServiceOptions struct {
 }
 
 // Configure contains implementation for package initialization
-func Configure([]byte) error {
+func Configure() error {
 	return envconfig.Process("MAILGUN", &opts)
 }

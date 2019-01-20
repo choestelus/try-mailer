@@ -10,8 +10,6 @@ type Config struct {
 	APIHost string `required:"false" default:"localhost"`
 	APIPort int    `default:"40000"`
 
-	Mailer string `default:"debug"`
-
 	// debug flag and log level will be associated with logrus log level
 	// when debug flag is set to true, log level will alwayls be "DEBUG" level
 	Debug    bool   `default:"true"`

@@ -14,6 +14,6 @@ type SendgridServiceOptions struct {
 }
 
 // Configure contains implementation for package initialization
-func Configure([]byte) error {
+func Configure() error {
 	return envconfig.Process("SENDGRID", &opts)
 }
