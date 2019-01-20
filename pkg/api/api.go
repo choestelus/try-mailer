@@ -26,7 +26,10 @@ func MailerHandlerFunc(db *pg.DB, me *mex.MailExporter) func(c echo.Context) err
 			})
 		}
 
-		allRecipients := append(msg.Recipients, msg.BCC, msg.CC)
+		allRecipients := []string{}
+		allRecipients = append(allRecipients, msg.Recipients...)
+		allRecipients = append(allRecipients, msg.CC...)
+		allRecipients = append(allRecipients, msg.BCC...)
 
 		err := me.SendMail(msg)
 		if err != nil {
