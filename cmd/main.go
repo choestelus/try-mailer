@@ -24,7 +24,8 @@ func main() {
 			log.Panicf("mailer misconfigured, instantiate config again and retry: %v", err)
 		}
 		log.Infof("registered [%v] backend service", backend)
-		me.AddBackend(mailer)
+		configuredMailer, err := mailer.Configure()
+		me.AddBackend(configuredMailer)
 	}
 
 	apiServer := newServer(cfg, me)
