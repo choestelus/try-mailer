@@ -52,3 +52,32 @@ func TestSendgridExporter(t *testing.T) {
 
 	assert.NoError(t, err)
 }
+
+func TestAutomailExporter(t *testing.T) {
+	mgopts := mailgun.MailgunServiceOptions{
+		APIKey:         MalformAPIKey,
+		Domain:         Domain,
+		SendingTimeout: Timeout,
+		Configured:     true,
+	}
+	mailgun.ConfigureFromOptions(mgopts)
+	mailgun := mailgun.NewMailer()
+
+	sgopts := sendgrid.SendgridServiceOptions{
+		APIKey:     SendgridAPIKey,
+		Configured: true,
+	}
+	sendgrid.ConfigureFromOptions(sgopts)
+	sendgrid := sendgrid.NewMailer()
+
+	me := NewMailExporter(MailExporterOptions{
+		Logger: logrus.New(),
+	})
+
+	me.AddBackend(mailgun)
+	me.AddBackend(sendgrid)
+
+	err := me.SendMail(msg)
+
+	assert.NoError(t, err)
+}
