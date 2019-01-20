@@ -21,8 +21,9 @@ type Content struct {
 
 // Attachment contains file information to attach
 type Attachment struct {
-	Name string
-	Body []byte
+	Name        string
+	Body        []byte
+	ContentType string
 }
 
 // Message compose various mail information to be sent
