@@ -53,7 +53,7 @@ func MailerHandlerFunc(db *pg.DB, me *mex.MailExporter) func(c echo.Context) err
 		// duplication over abstraction.
 		// inefficient, should not commit every insertion, but does the job.
 		for _, recp := range allRecipients {
-			_, err := db.ExecOne(RecordHistoryQuery, recp, c.RealIP(), err.Error(), false)
+			_, err := db.ExecOne(RecordHistoryQuery, recp, c.RealIP(), "", false)
 			if err != nil {
 				logrus.Warnf("failed to record sending status to history: %v", err)
 			}
