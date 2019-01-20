@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/choestelus/try-mailer/pkg/mailer"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -43,13 +42,13 @@ func (me *MailExporter) SendMail(msg mailer.Message) error {
 				return errors.Wrap(err, fmt.Sprintf("failed to initialize %v mailer", m.Name()))
 			}
 		}
-		spew.Dump(m)
 
 		err = configuredMailer.Send(msg)
 		if err != nil {
 			me.logger.Warnf("mail-exporter: failed to send mail using %v", configuredMailer.Name())
 			continue
 		} else {
+			me.logger.Infof("mail sent - using [%v] mailer", configuredMailer.Name())
 			return nil
 		}
 	}
