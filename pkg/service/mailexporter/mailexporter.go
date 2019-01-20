@@ -2,6 +2,8 @@
 package mailexporter
 
 import (
+	"fmt"
+
 	"github.com/choestelus/try-mailer/pkg/mailer"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -26,21 +28,25 @@ func (me *MailExporter) AddBackend(mailer mailer.Mailer) {
 	me.mailers = append(me.mailers, mailer)
 }
 
-// SendMail initialize mailer backend
+// SendMail attempt to send mail with backend registered in MailExporter
+// it'll try to use backend in mailer list to send, if failed, will try on
+// next backend until out of mailer. if no mailer success to send, returns error
 func (me *MailExporter) SendMail(msg mailer.Message) error {
-	mailer := me.mailers[0]
-
-	if !mailer.Configured() {
-		err := mailer.Configure()
-		if err != nil {
-			return errors.Wrap(err, "failed to initialize mailer")
+	for _, mailer := range me.mailers {
+		if !mailer.Configured() {
+			err := mailer.Configure()
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("failed to initialize %v mailer", mailer.Name()))
+			}
 		}
+
+		err := mailer.Send(msg)
+		if err != nil {
+			me.logger.Warnf("mail-exporter: failed to send mail using %v", mailer.Name())
+			continue
+		}
+		return nil
 	}
 
-	err := mailer.Send(msg)
-	if err != nil {
-		return errors.Wrap(err, "mail-exporter: failed to send mail")
-	}
-
-	return nil
+	return fmt.Errorf("failed to send mail - out of usable backend")
 }
