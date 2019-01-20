@@ -13,7 +13,7 @@ var opts = MailgunServiceOptions{}
 type MailgunServiceOptions struct {
 	Domain         string        `required:"true"`
 	APIKey         string        `required:"true" envconfig:"api_key"`
-	SendingTimeout time.Duration `default:"10s"`
+	SendingTimeout time.Duration `split_words:"true" default:"10s"`
 	Configured     bool          `default:"true"`
 }
 
