@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+
+	"github.com/go-pg/pg"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
 )
@@ -14,12 +17,38 @@ type Config struct {
 	// when debug flag is set to true, log level will alwayls be "DEBUG" level
 	Debug    bool   `default:"true"`
 	LogLevel string `default:"DEBUG"`
+
+	// DB.
+	DBHost     string `required:"true" envconfig:"db_host"`
+	DBPort     int    `required:"true" envconfig:"db_port"`
+	DBName     string `required:"true" envconfig:"db_name"`
+	DBUser     string `required:"true" envconfig:"db_user"`
+	DBPassword string `required:"true" envconfig:"db_password"`
 }
 
 func initConfig() Config {
 	cfg := Config{}
 	envconfig.MustProcess("MAILER", &cfg)
 	return cfg
+}
+
+func initDB(cfg Config) *pg.DB {
+	dbCon := pg.Connect(&pg.Options{
+		Addr:     fmt.Sprintf("%v:%v", cfg.DBHost, cfg.DBPort),
+		Database: cfg.DBName,
+		User:     cfg.DBUser,
+		Password: cfg.DBPassword,
+	})
+
+	res := 0
+	_, err := dbCon.QueryOne(pg.Scan(&res), "SELECT 1+1")
+	if err != nil || res != 2 {
+		panic(err)
+	}
+
+	logrus.Infof("initialzed database")
+
+	return dbCon
 }
 
 func initLog(cfg Config) *logrus.Logger {
