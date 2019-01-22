@@ -14,3 +14,6 @@
 # Test variables and constants
 *_testconst.go
 *.env
+
+# Vendor
+vendor/
