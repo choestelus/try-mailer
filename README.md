@@ -40,6 +40,7 @@ This project use key authentication make a request with following format:
 on both `GET` and `POST` method
 
 ### Host it yourself
+this project use go module to handle dependencies, run `go mod vendor` first then
 compile and build binary with
 ```
 export AUTH_KEY=$(pwgen -s 96 1) # generate strong credential here
