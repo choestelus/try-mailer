@@ -3,7 +3,6 @@
 package mailgun
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -93,10 +92,7 @@ func (m MailgunService) Send(msg mailer.Message) error {
 		message.AddCC(recp)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), opts.SendingTimeout)
-	defer cancel()
-
-	resp, id, err := m.mailgun.Send(ctx, message)
+	resp, id, err := m.mailgun.Send(message)
 	if err != nil {
 		return errors.Wrap(err, "failed to send mail")
 	}
