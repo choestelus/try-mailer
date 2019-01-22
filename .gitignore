@@ -13,3 +13,9 @@
 
 # Test variables and constants
 *_testconst.go
+*.env
+
+# Vendor
+vendor/
+# executables and binaries
+build/

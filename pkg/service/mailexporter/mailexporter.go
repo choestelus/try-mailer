@@ -32,20 +32,25 @@ func (me *MailExporter) AddBackend(mailer mailer.Mailer) {
 // it'll try to use backend in mailer list to send, if failed, will try on
 // next backend until out of mailer. if no mailer success to send, returns error
 func (me *MailExporter) SendMail(msg mailer.Message) error {
-	for _, mailer := range me.mailers {
-		if !mailer.Configured() {
-			err := mailer.Configure()
+	for _, m := range me.mailers {
+		var configuredMailer mailer.Mailer
+		var err error
+
+		if !m.Configured() {
+			configuredMailer, err = m.Configure()
 			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("failed to initialize %v mailer", mailer.Name()))
+				return errors.Wrap(err, fmt.Sprintf("failed to initialize %v mailer", m.Name()))
 			}
 		}
 
-		err := mailer.Send(msg)
+		err = configuredMailer.Send(msg)
 		if err != nil {
-			me.logger.Warnf("mail-exporter: failed to send mail using %v", mailer.Name())
+			me.logger.Warnf("mail-exporter: failed to send mail using %v", configuredMailer.Name())
 			continue
+		} else {
+			me.logger.Infof("mail sent - using [%v] mailer", configuredMailer.Name())
+			return nil
 		}
-		return nil
 	}
 
 	return fmt.Errorf("failed to send mail - out of usable backend")

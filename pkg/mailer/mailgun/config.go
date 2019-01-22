@@ -13,11 +13,11 @@ var opts = MailgunServiceOptions{}
 type MailgunServiceOptions struct {
 	Domain         string        `required:"true"`
 	APIKey         string        `required:"true" envconfig:"api_key"`
-	SendingTimeout time.Duration `default:"10s"`
-	Configured     bool          `default:"true"`
+	SendingTimeout time.Duration `split_words:"true" default:"10s"`
+	Configured     bool          `default:"false"`
 }
 
 // Configure contains implementation for package initialization
-func Configure([]byte) error {
+func Configure() error {
 	return envconfig.Process("MAILGUN", &opts)
 }

@@ -17,20 +17,28 @@ import (
 // underlying implementation for sendgrid service
 type SendgridService struct {
 	sendgrid *sendgrid.Client
+	opts     SendgridServiceOptions
 }
 
 // NewMailer returns abstracted mailgun service with mailer interface
 func NewMailer() mailer.Mailer {
-	sg := sendgrid.NewSendClient(opts.APIKey)
-
-	return SendgridService{
-		sendgrid: sg,
+	// sg := sendgrid.NewSendClient(opts.APIKey)
+	service := SendgridService{
+		opts: opts,
 	}
+
+	return service
 }
 
 // Configure loads configuration into declared opts variable.
-func (s SendgridService) Configure() error {
-	return envconfig.Process("MAILER", &opts)
+func (s SendgridService) Configure() (mailer.Mailer, error) {
+	opts := SendgridServiceOptions{}
+	err := envconfig.Process("SENDGRID", &opts)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load config fome environment")
+	}
+	s.opts = opts
+	return s, nil
 }
 
 func (m SendgridService) Configured() bool {
@@ -60,6 +68,7 @@ func (s SendgridService) Health() bool {
 
 // Send sends mail content to recipients from msg definition
 func (s SendgridService) Send(msg mailer.Message) error {
+	s.sendgrid = sendgrid.NewSendClient(s.opts.APIKey)
 
 	message := mail.NewV3Mail()
 	from := mail.NewEmail(msg.Sender, msg.Sender)

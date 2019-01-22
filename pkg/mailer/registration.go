@@ -1,7 +1,7 @@
 package mailer
 
 // Configurator defines function signature for mailer configure function
-type Configurator func([]byte) error
+type Configurator func() error
 
 // NewMailer defines function signature for mailer creations
 type NewMailer func() Mailer
