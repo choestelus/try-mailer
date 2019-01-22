@@ -17,3 +17,5 @@
 
 # Vendor
 vendor/
+# executables and binaries
+build/
