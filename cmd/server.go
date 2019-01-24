@@ -14,6 +14,7 @@ var authKey = ""
 func newServer(db *pg.DB, me *mex.MailExporter) *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORS())
 	e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
 		return key == authKey, nil
 	}))
